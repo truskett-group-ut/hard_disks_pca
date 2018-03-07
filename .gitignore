@@ -1,0 +1,8 @@
+*.dat
+*.txt
+*.xyz
+*.gsd
+processed_data/
+op_labeled/
+processed_data_ww/
+.ipynb_checkpoints/
