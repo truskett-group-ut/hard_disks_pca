@@ -1,1 +1,1 @@
-# hard_disks_pca
+# order parameters learned by PCA
