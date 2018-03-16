@@ -63,6 +63,7 @@ def FrameToFeatures(frame, N_nn, method, particle_inc, nn_inc):
         feature_batch = []
         if 'distance' in method:
             feature_batch.extend((Rpj[1:N_nn+1]/normalizing_distance)[0::nn_inc])
+            #feature_batch.extend(power((Rpj[1:N_nn+1]/normalizing_distance)[0::nn_inc], D-1))
         if 'composition' in method:
             feature_batch.extend(Dpj[1:N_nn+1][0::nn_inc])
         if 'angular' in method:

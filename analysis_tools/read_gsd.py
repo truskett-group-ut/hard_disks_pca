@@ -3,7 +3,7 @@ from numpy import mean, array, unique, concatenate
 from numpy.random import shuffle, rand
 from copy import deepcopy
 
-def ReadGSD(filename, shuffle_data=True, randomize=False):
+def ReadGSD(filename, shuffle_data=True, randomize=False, remove_types=[]):
     frames = []
     traj = gsd.hoomd.open(name=filename, mode='rb')
     
@@ -31,6 +31,12 @@ def ReadGSD(filename, shuffle_data=True, randomize=False):
         #replace with random positions if randomize is selected (for comparing to randomized PCA result and useful information content)
         if randomize:
             coords = L*rand(N, D) - L/2.0
+            
+        #remove a component from the trajectory
+        for removal_type in remove_types:
+            coords = coords[types == removal_type]
+            diameters = diameters[types == removal_type]
+            types = types[types == removal_type]
         
         #create our new data structure and shift to upper right quadrant
         frames.append({'coords': (coords[:,0:D]+L/2.0), 'diameters': diameters, 'types': types, 'L': L, 'D': D})
