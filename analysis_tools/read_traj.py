@@ -1,5 +1,8 @@
 from read_xyz import ReadXYZ
-from read_gsd import ReadGSD
+try:
+    from read_gsd import ReadGSD
+except:
+    None
 
 def ReadTraj(filename, traj_type, shuffle_data, randomize, remove_types):
     if traj_type == 'xyz':

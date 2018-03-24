@@ -16,12 +16,9 @@ def FrameToFeatures(frame, N_nn, method, particle_inc, nn_inc):
     N = float(len(coords))
     V = power(frame['L'], D)
     normalizing_distance = power(V/N, 1.0/D)
-    diameters = frame['diameters']
-    diameters_scaled = frame['diameters']/frame['diameters'][0]
     
     frame_features = []
-    combined_data = zip(coords, diameters)
-    for particle, diameter in combined_data[0::particle_inc]:
+    for particle in coords[0::particle_inc]:
         #nearest neighbor coordinate wrapping
         Rpj_v = particle - coords
         Rpj_v = Rpj_v - rint(Rpj_v/frame['L'])*frame['L']
@@ -30,10 +27,6 @@ def FrameToFeatures(frame, N_nn, method, particle_inc, nn_inc):
         #generate statistics for various nearest neighbors
         sorter = Rpj.argsort()
         Rpj = Rpj[sorter[::1]]
-        
-        #for composition calculations
-        if 'composition' in method:
-            Dpj = diameters_scaled[sorter[::1]]
         
         #chosen axis for measuring angles based on nearest neighbor
         if 'angular' in method:
@@ -63,9 +56,6 @@ def FrameToFeatures(frame, N_nn, method, particle_inc, nn_inc):
         feature_batch = []
         if 'distance' in method:
             feature_batch.extend((Rpj[1:N_nn+1]/normalizing_distance)[0::nn_inc])
-            #feature_batch.extend(power((Rpj[1:N_nn+1]/normalizing_distance)[0::nn_inc], D-1))
-        if 'composition' in method:
-            feature_batch.extend(Dpj[1:N_nn+1][0::nn_inc])
         if 'angular' in method:
             feature_batch.extend(append(cos(Tpj[2:N_nn+1])[0::nn_inc], 
                                         sin(Tpj[2:N_nn+1])[0::nn_inc], axis=0))
@@ -97,8 +87,6 @@ def FrameToFeaturesComposition(frame, probe_particle_indicies):
     N = float(len(coords))
     V = power(frame['L'], D)
     normalizing_distance = power(V/N, 1.0/D)
-    diameters = frame['diameters']
-    diameters_scaled = frame['diameters']/frame['diameters'][0]
     
     #reduce the coords down to only those we care about
     coords = coords[probe_particle_indicies]
