@@ -1,5 +1,5 @@
 from copy import deepcopy
-from numpy import power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array
+from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array
 from numpy.linalg import norm
 from numpy.random import shuffle
 from sklearn import preprocessing
@@ -55,7 +55,8 @@ def FrameToFeatures(frame, N_nn, method, particle_inc, nn_inc):
         #possible feature options
         feature_batch = []
         if 'distance' in method:
-            feature_batch.extend((Rpj[1:N_nn+1]/normalizing_distance)[0::nn_inc])
+            #feature_batch.extend((Rpj[1:N_nn+1]/normalizing_distance)[0::nn_inc])
+            feature_batch.extend(log(Rpj[1:N_nn+1])[0::nn_inc])
         if 'angular' in method:
             feature_batch.extend(append(cos(Tpj[2:N_nn+1])[0::nn_inc], 
                                         sin(Tpj[2:N_nn+1])[0::nn_inc], axis=0))
