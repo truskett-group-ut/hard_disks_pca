@@ -3,6 +3,7 @@ from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, tran
 from numpy.linalg import norm
 from numpy.random import shuffle
 from sklearn import preprocessing
+import warnings
 
 #################################################################################################################################
 #################################################################################################################################
@@ -112,3 +113,64 @@ def TrajectoryToFeaturesComposition(frames, probe_particle_indicies):
         features.append(FrameToFeaturesComposition(frame, probe_particle_indicies))
     return features
 
+
+#################################################################################################################################
+#################################################################################################################################
+#################################################################################################################################
+
+#this generates NN features for the PCA analysis (or some other machine learning method as well)
+def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
+    #extract some relevant frames level details
+    coords = deepcopy(frame['coords'])
+    D = float(frame['D'])
+    N = float(len(coords))
+    V = power(frame['L'], D)
+    normalizing_distance = power(V/N, 1.0/D)
+    
+    #check that the number of batches is fine given the number of particles per batch
+    if N_batch*batches_per_frame > N:
+        batches_per_frame_red = int(N/float(N_batch))
+        warnings.warn('{} is to many batches. Using {} \
+                       batches instead. This amounts to using {} of {} particles.'.format(batches_per_frame, 
+                                                                                          batches_per_frame_red, 
+                                                                                          N_batch*batches_per_frame_red, 
+                                                                                          N))
+        batches_per_frame = batches_per_frame_red
+    
+    #loop over the batches
+    aggregated_frame_features = []
+    for i in range(batches_per_frame):
+        coords_batch = coords[i*N_batch:i*N_batch+N_batch]
+
+        #loop over the particles
+        frame_features = []
+        for particle in coords_batch:
+            #nearest neighbor coordinate wrapping
+            Rpj_v = particle - coords
+            Rpj_v = Rpj_v - rint(Rpj_v/frame['L'])*frame['L']
+            Rpj = (sqrt(sum(power(Rpj_v, 2.0), axis=1)))     
+
+            #sorting by the distance to enable the discovery of positoinal order
+            sorter = Rpj.argsort()
+            Rpj = Rpj[sorter[::1]]
+
+            #create features that correspond to probe particles and their nearest neighbors
+            frame_features.append((Rpj[1:N_nn+1])[0::nn_inc])
+
+        #sort by the first nearest neighbor to again provide some positional basis on which to learn correlations
+        frame_features = array(frame_features)
+        sorter = frame_features[:,0].argsort()
+        frame_features = frame_features[sorter]
+        aggregated_frame_features.append(array(frame_features).flatten())
+
+    return aggregated_frame_features
+
+#this converts an entire trajectory into features
+def TrajectoryToFeaturesPosition(frames, N_nn, nn_inc, N_batch, batches_per_frame):
+    #print filename
+    features = []
+    for frame in frames: 
+        aggregated_frame_features = FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame)
+        for frame_features in aggregated_frame_features:
+            features.append(frame_features)
+    return features
