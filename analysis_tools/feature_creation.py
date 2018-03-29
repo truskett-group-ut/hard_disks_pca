@@ -163,7 +163,7 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
         frame_features = frame_features[sorter]
         aggregated_frame_features.append(array(frame_features).flatten())
 
-    return aggregated_frame_features
+    return array(aggregated_frame_features)
 
 #this converts an entire trajectory into features
 def TrajectoryToFeaturesPosition(frames, N_nn, nn_inc, N_batch, batches_per_frame):
@@ -173,4 +173,4 @@ def TrajectoryToFeaturesPosition(frames, N_nn, nn_inc, N_batch, batches_per_fram
         aggregated_frame_features = FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame)
         for frame_features in aggregated_frame_features:
             features.append(frame_features)
-    return features
+    return array(features)
