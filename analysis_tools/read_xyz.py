@@ -53,25 +53,26 @@ def ReadXYZ(filename, shuffle_data=True, randomize=False, remove_types=[]):
                     L = float(search_L.group(1))
                     
         #append final frame
-        coords = array(coords)
-        types = array(types)
-        D = 3 - int(abs(max(coords[:,2]) - min(coords[:,2]))/L < 1e-10)
-        Ds.add(D)
-        Ns.add(len(coords))
-                
-        #replace with random positions if randomize is selected 
-        if randomize:
-            coords = L*rand(len(coords), len(coords[0]))
-        frames.append({'coords': coords[:,0:D], 'types': types, 'L': L, 'D': D})
-                
-        #remove a component from the trajectory
-        for removal_type in remove_types:
-            coords = coords[types == removal_type]
-            types = types[types == removal_type]
-                
-        coords, coords_count = [], 0
-        types = []
-        L = None
+        if coords:
+            coords = array(coords)
+            types = array(types)
+            D = 3 - int(abs(max(coords[:,2]) - min(coords[:,2]))/L < 1e-10)
+            Ds.add(D)
+            Ns.add(len(coords))
+
+            #replace with random positions if randomize is selected 
+            if randomize:
+                coords = L*rand(len(coords), len(coords[0]))
+            frames.append({'coords': coords[:,0:D], 'types': types, 'L': L, 'D': D})
+
+            #remove a component from the trajectory
+            for removal_type in remove_types:
+                coords = coords[types == removal_type]
+                types = types[types == removal_type]
+
+            coords, coords_count = [], 0
+            types = []
+            L = None
         
     #check that all of the frames contain the same number of particles
     if len(Ns) != 1:
