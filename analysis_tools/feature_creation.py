@@ -150,7 +150,7 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
             Rpj_v = Rpj_v - rint(Rpj_v/frame['L'])*frame['L']
             Rpj = (sqrt(sum(power(Rpj_v, 2.0), axis=1)))     
 
-            #sorting by the distance to enable the discovery of positoinal order
+            #sorting by the distance to enable the discovery of positional order
             sorter = Rpj.argsort()
             Rpj = Rpj[sorter[::1]]
 
