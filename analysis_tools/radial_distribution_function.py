@@ -1,6 +1,6 @@
 from numpy import histogram, pi, power, rint
 from numpy.linalg import norm
-from numpy import trapz
+from numpy import trapz, arange
 
 #function for calculating the rdf
 def RDF(frames, dr):
