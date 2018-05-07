@@ -1,5 +1,5 @@
 from copy import deepcopy
-from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array
+from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array, mean
 from numpy.linalg import norm
 from numpy.random import shuffle
 from sklearn import preprocessing
@@ -159,8 +159,14 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
 
         #sort by the first nearest neighbor to again provide some positional basis on which to learn correlations
         frame_features = array(frame_features)
-        sorter = frame_features[:,0].argsort()
+        #####sorter = frame_features[:,0].argsort()
+        #####frame_features = frame_features[sorter]
+        #TEST
+        sorter = mean(frame_features, axis=1).argsort()
         frame_features = frame_features[sorter]
+        #TEST
+        
+        shuffle(frame_features)
         aggregated_frame_features.append(array(frame_features).flatten())
 
     return array(aggregated_frame_features)
