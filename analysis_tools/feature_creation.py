@@ -1,7 +1,7 @@
 from copy import deepcopy
 from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array, mean
 from numpy.linalg import norm
-from numpy.random import shuffle
+from numpy.random import shuffle, choice
 from sklearn import preprocessing
 import warnings
 
@@ -127,20 +127,21 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
     V = power(frame['L'], D)
     normalizing_distance = power(V/N, 1.0/D)
     
-    #check that the number of batches is fine given the number of particles per batch
-    if N_batch*batches_per_frame > N:
-        batches_per_frame_red = int(N/float(N_batch))
-        warnings.warn('{} is to many batches. Using {} \
-                       batches instead. This amounts to using {} of {} particles.'.format(batches_per_frame, 
-                                                                                          batches_per_frame_red, 
-                                                                                          N_batch*batches_per_frame_red, 
-                                                                                          N))
-        batches_per_frame = batches_per_frame_red
+    ###check that the number of batches is fine given the number of particles per batch
+    ###if N_batch*batches_per_frame > N:
+    ###    batches_per_frame_red = int(N/float(N_batch))
+    ###    warnings.warn('{} is to many batches. Using {} \
+    ###                   batches instead. This amounts to using {} of {} particles.'.format(batches_per_frame, 
+    ###                                                                                      batches_per_frame_red, 
+    ###                                                                                      N_batch*batches_per_frame_red, 
+    ###                                                                                      N))
+    ###    batches_per_frame = batches_per_frame_red
     
     #loop over the batches
     aggregated_frame_features = []
     for i in range(batches_per_frame):
-        coords_batch = coords[i*N_batch:i*N_batch+N_batch]
+        ###coords_batch = coords[i*N_batch:i*N_batch+N_batch]
+        coords_batch = choice(coords, N_batch, replace=False)
 
         #loop over the particles
         frame_features = []
