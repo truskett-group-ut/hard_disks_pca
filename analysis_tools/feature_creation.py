@@ -159,14 +159,16 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
 
         #sort by the first nearest neighbor to again provide some positional basis on which to learn correlations
         frame_features = array(frame_features)
-        #####sorter = frame_features[:,0].argsort()
-        #####frame_features = frame_features[sorter]
+        ####sorter = frame_features[:,0].argsort()
+        ####frame_features = frame_features[sorter]
+        
         #TEST
-        sorter = mean(frame_features, axis=1).argsort()
-        frame_features = frame_features[sorter]
-        #TEST
+        #sorter = mean(frame_features, axis=1).argsort()
+        #frame_features = frame_features[sorter]
         
         shuffle(frame_features)
+        #TEST
+        
         aggregated_frame_features.append(array(frame_features).flatten())
 
     return array(aggregated_frame_features)
