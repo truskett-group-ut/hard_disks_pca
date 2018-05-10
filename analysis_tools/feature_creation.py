@@ -141,7 +141,7 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
     aggregated_frame_features = []
     for i in range(batches_per_frame):
         ###coords_batch = coords[i*N_batch:i*N_batch+N_batch]
-        coords_batch = choice(coords, N_batch, replace=False)
+        coords_batch = coords[choice(int(N), N_batch, replace=False)]
 
         #loop over the particles
         frame_features = []
@@ -156,7 +156,7 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
             Rpj = Rpj[sorter[::1]]
 
             #create features that correspond to probe particles and their nearest neighbors
-            frame_features.append((Rpj[1:N_nn+1])[0::nn_inc])
+            frame_features.append((Rpj[1:N_nn+1])[0::nn_inc]/normalizing_distance)
 
         #sort by the first nearest neighbor to again provide some positional basis on which to learn correlations
         frame_features = array(frame_features)
