@@ -95,14 +95,23 @@ def FrameToFeaturesComposition(frame, probe_particle_indicies):
 
     #build up the features considering only the probes
     frame_features = []
-    for particle in coords:
-        #nearest neighbor coordinate wrapping
-        Rpj_v = particle - coords
+    for i in range(len(coords)-1):
+        particle = coords[i]
+        Rpj_v = particle - coords[i+1:]
         Rpj_v = Rpj_v - rint(Rpj_v/frame['L'])*frame['L']
-        Rpj = (sqrt(sum(power(Rpj_v, 2.0), axis=1)))     
+        Rpj = (sqrt(sum(power(Rpj_v, 2.0), axis=1))) 
+    
+    #for particle in coords:
+    #    #nearest neighbor coordinate wrapping
+    #    Rpj_v = particle - coords
+    #    Rpj_v = Rpj_v - rint(Rpj_v/frame['L'])*frame['L']
+    #    Rpj = (sqrt(sum(power(Rpj_v, 2.0), axis=1)))     
         
         #extend the feature vector stacking the particle side by side
         frame_features.extend(Rpj/normalizing_distance)
+    
+    #probe the random 20 particle case
+    #shuffle(frame_features)
 
     return array(frame_features)
 
@@ -111,7 +120,7 @@ def TrajectoryToFeaturesComposition(frames, probe_particle_indicies):
     features = []
     for frame in frames:        
         features.append(FrameToFeaturesComposition(frame, probe_particle_indicies))
-    return features
+    return array(features)
 
 
 #################################################################################################################################
@@ -126,16 +135,6 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
     N = float(len(coords))
     V = power(frame['L'], D)
     normalizing_distance = power(V/N, 1.0/D)
-    
-    ###check that the number of batches is fine given the number of particles per batch
-    ###if N_batch*batches_per_frame > N:
-    ###    batches_per_frame_red = int(N/float(N_batch))
-    ###    warnings.warn('{} is to many batches. Using {} \
-    ###                   batches instead. This amounts to using {} of {} particles.'.format(batches_per_frame, 
-    ###                                                                                      batches_per_frame_red, 
-    ###                                                                                      N_batch*batches_per_frame_red, 
-    ###                                                                                      N))
-    ###    batches_per_frame = batches_per_frame_red
     
     #loop over the batches
     aggregated_frame_features = []
@@ -157,12 +156,11 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
 
             #create features that correspond to probe particles and their nearest neighbors
             frame_features.append((Rpj[1:N_nn+1])[0::nn_inc]/normalizing_distance)
-            #frame_features.append((Rpj[350:N_nn+1])[0::nn_inc]/normalizing_distance)
 
         #sort by the first nearest neighbor to again provide some positional basis on which to learn correlations
-        frame_features = array(frame_features)
-        ####sorter = frame_features[:,0].argsort()
-        ####frame_features = frame_features[sorter]
+        #frame_features = array(frame_features)
+        #sorter = frame_features[:,5].argsort()
+        #frame_features = frame_features[sorter]
         
         #TEST
         #sorter = mean(frame_features, axis=1).argsort()
