@@ -79,6 +79,7 @@ for phase in ['fit_whitener', 'correct_features']:
 from analysis_tools.autoencoder import AutoEncoder
 from sklearn.model_selection import train_test_split
 from keras.callbacks import ModelCheckpoint
+from numpy import savetxt
 
 dim = corrected_features.shape[1]
 corrected_features_train, corrected_features_test = train_test_split(corrected_features, test_size=0.25, random_state=42)
@@ -94,8 +95,9 @@ for i in range(20):
     print "Layers: {}\n".format(model.layer_dims)
     model.Compile(optimizer='adamax', loss='mean_squared_error')
     checkpointer = ModelCheckpoint(filepath='./model/weights_{}.hdf5'.format(i), verbose=1, save_best_only=True)
-    history_raw = model.Fit(corrected_features_train, corrected_features_test,
-                    epochs=1000, batch_size=2000, shuffle=True, callbacks=[checkpointer])
+    history = model.Fit(corrected_features_train, corrected_features_test,
+                    epochs=600, batch_size=500, shuffle=True, verbose=0, callbacks=[checkpointer])
+    savetxt('./model/val_loss_{}.txt'.format(i), history.history['val_loss'])
 
 
 
