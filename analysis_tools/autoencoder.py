@@ -28,7 +28,8 @@ class AutoEncoder:
             current_dim = int(current_dim*shrink)
         
         #final encoding layer
-        encoded = Dense(encode_dim, **kwargs)(encoded) 
+        #encoded = Dense(encode_dim, **kwargs)(encoded)
+        encoded = Dense(encode_dim, activation='linear')(encoded) 
         self.layer_dims.append(encode_dim)
         
         #first expansion layer
