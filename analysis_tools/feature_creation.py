@@ -1,5 +1,5 @@
 from copy import deepcopy
-from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array, mean
+from numpy import log, power, rint, sqrt, sum, unique, repeat, arccos, dot, transpose, append, cos, sin, hstack, maximum, minimum, pi, array, mean, prod
 from numpy.linalg import norm
 from numpy.random import shuffle, choice
 from sklearn import preprocessing
@@ -15,7 +15,9 @@ def FrameToFeatures(frame, N_nn, method, particle_inc, nn_inc):
     coords = deepcopy(frame['coords'])
     D = float(frame['D'])
     N = float(len(coords))
-    V = power(frame['L'], D)
+    #DEPRECATED
+    #V = power(frame['L'], D)
+    V = prod(frame['L'][:frame['D']])
     normalizing_distance = power(V/N, 1.0/D)
     
     frame_features = []
@@ -87,7 +89,9 @@ def FrameToFeaturesComposition(frame, probe_particle_indicies):
     p_types = deepcopy(frame['types'])
     D = float(frame['D'])
     N = float(len(coords))
-    V = power(frame['L'], D)
+    #DEPRECATED
+    #V = power(frame['L'], D)
+    V = prod(frame['L'][:frame['D']])
     normalizing_distance = power(V/N, 1.0/D)
     
     #reduce the coords down to only those we care about
@@ -133,7 +137,9 @@ def FrameToFeaturesPosition(frame, N_nn, nn_inc, N_batch, batches_per_frame):
     coords = deepcopy(frame['coords'])
     D = float(frame['D'])
     N = float(len(coords))
-    V = power(frame['L'], D)
+    #DEPRECATED
+    #V = power(frame['L'], D)
+    V = prod(frame['L'][:frame['D']])
     normalizing_distance = power(V/N, 1.0/D)
     
     #loop over the batches

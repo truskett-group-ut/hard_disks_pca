@@ -18,11 +18,13 @@ def ReadGSD(filename, shuffle_data=True, randomize=False, remove_types=[]):
         diameters = snap.particles.diameter
         coords = snap.particles.position
         
+        #THIS IS DEPRECATED AND WILL BE DELETED SOON
         #check for a square box
-        if (max(box[0:D]) - min(box[0:D]))/mean(box[0:D]) > 0.000000000001:
-            raise Exception('Not a rectangle or square!!!')
-            
-        L = box[0]
+        #if (max(box[0:D]) - min(box[0:D]))/mean(box[0:D]) > 0.000000000001:
+        #    raise Exception('Not a rectangle or square!!!')
+        
+        #store the three lengths in a vector
+        L = box[0:D]
         
         #get the particle types
         possible_types = snap.particles.types
