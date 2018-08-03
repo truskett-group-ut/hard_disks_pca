@@ -15,13 +15,13 @@ from sklearn.decomposition import IncrementalPCA
 N_nn = 100
 nn_inc = 1
 N_batch = 50
-batches_per_frame = 100
+batches_per_frame = 20
 splits = 5
 traj_type = 'gsd'
 shuffle_data = True
 
 #loop over the simulation indices
-for sim index in range(1,16):
+for sim_index in range(1,16):
     
     #establish the trajectory to be analyzed
     filebase = 'p100_N4_{}'.format(sim_index)
@@ -63,12 +63,12 @@ for sim index in range(1,16):
             elif stage == 'calculate_ops':
                 OPs.extend(incpca.transform(incpca_ig.transform(features)))
 
-            clear_output()
+            #clear_output()
     
     OPs = array(OPs)
     
     #save the OP analysis
-    savetxt('./evap_cryst_analysis/{}.txt'.format(filebase), OPs)
+    savetxt('./evap_cryst_analysis/OPs_{}.txt'.format(filebase), OPs)
  
     #save both models
     pickle_model = open('./evap_cryst_analysis/incpca_ig_{}.pkl'.format(filebase), 'wb')
