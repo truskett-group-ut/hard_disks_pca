@@ -37,8 +37,8 @@ class AutoEncoder:
             current_dim = int(current_dim*shrink)
         
         #final encoding layer
-        encoded = Dense(encode_dim, **kwargs)(encoded)
-        #encoded = Dense(encode_dim, activation='sigmoid')(encoded) 
+        #encoded = Dense(encode_dim, **kwargs)(encoded)
+        encoded = Dense(encode_dim, activation='linear')(encoded) 
         self.layer_dims.append(encode_dim)
         self.encoded_layer += 1
         
@@ -85,7 +85,10 @@ class AutoEncoder:
         split_encoded = [self.encoder(input) for input in split_encode_data]
         
         #average the output from each encoder
-        average_encoded = Average()(split_encoded)
+        if num_clones == 1:
+            average_encoded = split_encoded[0]
+        else:
+            average_encoded = Average()(split_encoded)
         
         #create the full encoder
         self.joint_encoder = Model(joint_encode_data, average_encoded)
